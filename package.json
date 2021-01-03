@@ -13,7 +13,6 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged && concurrently npm:test npm:lint"
     }
   },
   "devDependencies": {
@@ -48,7 +47,23 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "@ckeditor/ckeditor5-basic-styles": "^24.0.0",
+    "@ckeditor/ckeditor5-build-classic": "^24.0.0",
+    "@ckeditor/ckeditor5-core": "^24.0.0",
+    "@ckeditor/ckeditor5-essentials": "^24.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^24.0.0",
+    "@ckeditor/ckeditor5-react": "^3.0.0",
+    "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2",
+    "@popperjs/core": "^2.6.0",
+    "babel-polyfill": "^6.26.0",
+    "bootstrap": "^4.5.3",
+    "draft-js": "^0.11.7",
+    "jquery": "^3.5.1",
+    "react": "^16.14.0",
+    "react-bootstrap": "^1.4.0",
+    "react-dom": "^16.14.0",
+    "react-summernote": "^2.0.2",
+    "single-spa-leaked-globals": "^1.0.0"
   }
 }
