@@ -1,35 +1,82 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createRef } from "react";
 import { Container, Row, Col, Button, ListGroup } from "react-bootstrap";
 import MyEditor from "./Editor";
 import NoteComponent from "./NoteComponent";
+import axios from "axios";
 
 const Note = () => {
   const [note, setNote] = useState({});
-  const [noteNew, setNoteNew] = useState(false);
+  const [saveNew, setSaveNew] = useState(true);
+  const [noteNew, setNoteNew] = useState(true);
   const [notesState, setNotes] = useState([]);
   useEffect(() => {
-    fetch("https://notes-app-rails.herokuapp.com/notes")
-      .then((res) => res.json())
-      .then((res) => setNotes(res))
-      .catch((error) => console.log(error));
+    axios("https://notes-app-rails.herokuapp.com/notes").then((res) =>
+      setNotes(res.data)
+    );
   }, []);
-
-  useEffect(() => {
-    console.log("check");
-    console.log(note);
-    console.log(noteNew);
-  }, [note, noteNew]);
 
   const newNote = {
     title: "",
     content: "",
+    id: "",
   };
+
+  const saveReference = createRef();
 
   let notes = null;
 
   const handleSwitchNote = (note) => {
-    setNote({ title: "hello", content: "fghhgjhhjg" });
+    setNote(note);
+    setNoteNew(false);
+    setSaveNew(false);
+  };
+
+  const openNewEditor = () => {
     setNoteNew(true);
+    setSaveNew(true);
+  };
+
+  const handleSaveNote = (title, content, id) => {
+    if (saveNew) {
+      axios
+        .post("https://notes-app-rails.herokuapp.com/notes", {
+          title,
+          content,
+        })
+        .then(function (response) {
+          axios("https://notes-app-rails.herokuapp.com/notes").then((res) =>
+            setNotes(res.data)
+          );
+        })
+        .catch(function (error) {
+        });
+    } else {
+      axios
+        .patch("https://notes-app-rails.herokuapp.com/notes/" + id, {
+          title,
+          content,
+        })
+        .then(function (response) {
+          axios("https://notes-app-rails.herokuapp.com/notes").then((res) =>
+            setNotes(res.data)
+          );
+        })
+        .catch(function (error) {
+        });
+    }
+  };
+
+  const handleDelete = (id) => {
+    axios
+      .delete("https://notes-app-rails.herokuapp.com/notes/" + id)
+      .then(function (response) {
+        axios("https://notes-app-rails.herokuapp.com/notes").then((res) =>
+          setNotes(res.data)
+        );
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   if (notesState) {
@@ -40,6 +87,7 @@ const Note = () => {
             <NoteComponent
               note={note}
               switch={handleSwitchNote}
+              del={handleDelete}
             ></NoteComponent>
           );
         })}
@@ -57,7 +105,7 @@ const Note = () => {
         <h3 className="text-center">MANAGE YOUR NOTES HERE</h3>
         <Row className="p-3">
           <Col>
-            <Button>ADD NOTE</Button>
+            <Button onClick={openNewEditor}>ADD NOTE</Button>
           </Col>
           <Col></Col>
           <Col></Col>
@@ -74,9 +122,9 @@ const Note = () => {
           </Col>
           <Col md="9" style={{ height: "500px", backgroundColor: "#F4F6F6" }}>
             {noteNew ? (
-              <MyEditor note={note}></MyEditor>
+              <MyEditor note={newNote} save={handleSaveNote}></MyEditor>
             ) : (
-              <MyEditor note={newNote}></MyEditor>
+              <MyEditor note={note} save={handleSaveNote}></MyEditor>
             )}
           </Col>
         </Row>
