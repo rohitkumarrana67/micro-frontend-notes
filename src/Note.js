@@ -75,7 +75,6 @@ const Note = () => {
         );
       })
       .catch(function (error) {
-        console.log(error);
       });
   };
 
